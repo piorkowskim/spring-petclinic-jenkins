@@ -1,0 +1,52 @@
+pipeline {
+	agent any
+	stage('Checkstyle') {
+		steps {
+			// runs checkstyle using  and saves result
+			sh './mvnw checkstyle:checkstyle'
+			archiveArtifacts artifacts: '**/target/checkstyle-result.xml', alllowEmptyArchive: true
+		}
+	}
+	
+	stage('Test') {
+		steps {
+			// runs maven's tests
+			sh './mvnw test'
+		}
+	}
+
+	stage('Build') {
+		steps {
+		// builds the app without tests
+		sh './mvnw clean install -Dskiptests'
+		}
+	}
+
+	stage('BuildDockerImage') {
+		when {
+			branch 'main'
+		}
+		steps {
+			script {
+				app = docker.build('miloshsh/spring-petclinic')
+				app.inside {
+					sh 'echo im working!'
+				}
+			}
+		}
+	}
+
+	stage('PushDockerImage') {
+		when {
+			branch 'main'
+		}
+		steps {
+			script {
+				docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
+				app.push("${env.BUILD_NUMBER}")
+				app.push("latest")
+				}
+			}
+		}
+	}
+}
