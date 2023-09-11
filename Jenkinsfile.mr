@@ -1,5 +1,6 @@
 pipeline {
 	agent any
+	stages {
 	stage('Checkstyle') {
 		steps {
 			// runs checkstyle using  and saves result
@@ -27,6 +28,7 @@ pipeline {
 			branch 'main'
 		}
 		steps {
+		// builds image from docker repo
 			script {
 				app = docker.build('miloshsh/spring-petclinic')
 				app.inside {
@@ -41,6 +43,7 @@ pipeline {
 			branch 'main'
 		}
 		steps {
+		// pushes image to docker repo with latest build number 
 			script {
 				docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
 				app.push("${env.BUILD_NUMBER}")
@@ -49,4 +52,5 @@ pipeline {
 			}
 		}
 	}
+}
 }
