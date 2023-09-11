@@ -5,7 +5,7 @@ pipeline {
 		steps {
 			// runs checkstyle using  and saves result
 			sh './mvnw checkstyle:checkstyle'
-			archiveArtifacts artifacts: '**/target/checkstyle-result.xml', alllowEmptyArchive: true
+			archiveArtifacts artifacts: '**/target/checkstyle-result.xml', allowEmptyArchive: true
 		}
 	}
 	
