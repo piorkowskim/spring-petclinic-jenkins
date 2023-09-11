@@ -19,7 +19,7 @@ pipeline {
 	stage('Build') {
 		steps {
 		// builds the app without tests
-		sh './mvnw clean install -Dskiptests'
+		sh './mvnw clean install -DskipTests'
 		}
 	}
 
