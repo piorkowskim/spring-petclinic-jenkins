@@ -51,17 +51,18 @@ pipeline {
 			}
 		}
 	}
-		stages {
-		stage('CreateDockerMainImage') {
-			steps {
-			// builds docker image using repo's dockerfile & pushes it to docker repo
-				script {
-					sh "docker build -t miloshsh/spring-petclinic:${env.BUILD_NUMBER} ."
-					sh "docker push miloshsh/main:latest"
-				}
+	
+	stage('CreateDockerMainImage') {
+                when {
+                        branch 'main'
+                }
+		steps {
+		// builds docker image using repo's dockerfile & pushes it to docker repo
+			script {
+				sh "docker build -t miloshsh/spring-petclinic:${env.BUILD_NUMBER} ."
+				sh "docker push miloshsh/main:latest"
 			}
 		}
 	}
 }
 }
-
